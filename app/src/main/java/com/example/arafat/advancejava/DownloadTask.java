@@ -1,5 +1,7 @@
 package com.example.arafat.advancejava;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,12 +10,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadTask extends AsyncTask<String, Void, String> {
+public class DownloadTask extends AsyncTask<String, Void, Bitmap> {
 
     private static final String TAG = "DownloadTask";
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected Bitmap doInBackground(String... strings) {
 
         Log.d(TAG, "doInBackground: " + strings[0]);
 
@@ -21,26 +23,20 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         URL url;
         HttpURLConnection urlConnection = null;
 
-
         try {
 
             url = new URL(strings[0]);
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
             InputStream inputStream = urlConnection.getInputStream();
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            int data = reader.read();
+            Bitmap myBitmap = BitmapFactory.decodeStream(inputStream);
 
-            while (data!= -1) {
-                char current = (char) data;
-                result.append(current);
-                data = reader.read();
-            }
-            return result.toString();
+            return myBitmap;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "done";
+        return null;
     }
 }
